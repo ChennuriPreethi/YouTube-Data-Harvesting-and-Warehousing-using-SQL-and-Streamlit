@@ -1,0 +1,23 @@
+.stButton button{
+    color: black;
+    background-color: black;
+    height: 20px;
+    width: 120px;
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+}
+
+.stButton button:hover {
+	background:azure;
+    color: black;
+    border-color: black;
+}
+
+.stTextInput input {
+    color: black;
+    background-color: white;
+}
+
+
