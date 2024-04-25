@@ -191,8 +191,6 @@ def channel_sqltable():
 
         mydb.commit()
 
-
-
 # ---------------------------------------------------------------------------------------
 
 def video_sqltable():
@@ -214,10 +212,8 @@ def video_sqltable():
                             PRIMARY KEY (Video_Id),
                             FOREIGN KEY (Channel_Id) REFERENCES Channels_Table(Channel_Id))""")
     mydb.commit()   
-
-
+    
 # ---------------------------------------------------------------------------------------
-
 
 def comments_sqltable():
         mycursor.execute("""CREATE TABLE IF NOT EXISTS Comments_Table (
@@ -236,102 +232,86 @@ def comments_sqltable():
 
 # ---------------------------------------------------------------------------------------
 
-def upload_channel_sqltable():
-    channel_details = channel_data(channelId)
-
-    for item in channel_details:
-        ch_values = (
-            item['Channel_Id'],
-            item['Channel_Name'],
-            item['Channel_Description'],
-            item['Playlist_Id'],
-            item['Subscribers'],
-            item['Total_Videos'],
-            item['Views']
-        )
-    mycursor.execute('''INSERT INTO Channels_Table (
-                                Channel_Id,
-                                Channel_Name,
-                                Channel_Description,
-                                Playlist_Id,
-                                Subscribers,
-                                Total_Videos,
-                                Views) VALUES (%s, %s, %s, %s, %s, %s, %s)''',ch_values)
-    
-    mydb.commit()
-
-
-
-# ---------------------------------------------------------------------------------------
-
-def upload_video_sqltable():
-    video_details = videos_data(videos_ids(channelId))
-    for item in video_details:
-        v_values = (
-            item['Channel_Id'],
-            str(item['Channel_Name']),
-            item['Video_Id'],
-            str(item['Video_Name']),
-            str(item['Video_Description']),
-            str(item['Tags']),
-            item['Published_At'],
-            item['View_Count'],
-            item['Like_Count'],
-            item['Favorite_Count'],
-            item['Comment_Counts'],
-            str(item['Duration']),
-            str(item['Thumbnails']),
-            str(item['Caption_Status'])
-        )
-        mycursor.execute('''INSERT INTO Videos_Table (
-                                Channel_Id,
-                                Channel_Name,
-                                Video_Id,
-                                Video_Name,
-                                Video_Description,
-                                Tags,
-                                Published_At,
-                                View_Count,
-                                Like_Count,
-                                Favorite_Count,
-                                Comment_Counts,
-                                Duration,
-                                Thumbnails,
-                                Caption_Status) VALUES (%s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)''',v_values)
+def upload_table():
+    try:
+        channel_details = channel_data(channelId)
+        video_details = videos_data(videos_ids(channelId))
+        comment_details = comment_data(videos_ids(channelId))
+        for item in channel_details:
+            ch_values = (
+                item['Channel_Id'],
+                item['Channel_Name'],
+                item['Channel_Description'],
+                item['Playlist_Id'],
+                item['Subscribers'],
+                item['Total_Videos'],
+                item['Views']
+            )
+        mycursor.execute('''INSERT INTO Channels_Table (
+                                    Channel_Id,
+                                    Channel_Name,
+                                    Channel_Description,
+                                    Playlist_Id,
+                                    Subscribers,
+                                    Total_Videos,
+                                    Views) VALUES (%s, %s, %s, %s, %s, %s, %s)''',ch_values)
         
-        
-        mydb.commit()
-
-# ---------------------------------------------------------------------------------------
-
-def upload_comments_sqltable():
-
-    comment_details = comment_data(videos_ids(channelId))
-
-    for item in comment_details:
-        c_values = (
-            item['Channel_Id'],
-            item['Video_Id'],
-            item['Comment_Id'],
-            item['Author_Name'],
-            item['Text_Display'],
-            item['Published_At']
-        )
-
-
-        mycursor.execute('''INSERT INTO Comments_Table (
-                                Channel_Id,
-                                Video_Id,
-                                Comment_Id, 
-                                Author_Name,
-                                Text_Display,
-                                Published_At) VALUES (%s, %s, %s, %s, %s, %s)''',c_values)       
-        
+        for item in video_details:
+            v_values = (
+                item['Channel_Id'],
+                str(item['Channel_Name']),
+                item['Video_Id'],
+                str(item['Video_Name']),
+                str(item['Video_Description']),
+                str(item['Tags']),
+                item['Published_At'],
+                item['View_Count'],
+                item['Like_Count'],
+                item['Favorite_Count'],
+                item['Comment_Counts'],
+                str(item['Duration']),
+                str(item['Thumbnails']),
+                str(item['Caption_Status'])
+            )
+            mycursor.execute('''INSERT INTO Videos_Table (
+                                    Channel_Id,
+                                    Channel_Name,
+                                    Video_Id,
+                                    Video_Name,
+                                    Video_Description,
+                                    Tags,
+                                    Published_At,
+                                    View_Count,
+                                    Like_Count,
+                                    Favorite_Count,
+                                    Comment_Counts,
+                                    Duration,
+                                    Thumbnails,
+                                    Caption_Status) VALUES (%s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)''',v_values)
+        for item in comment_details:
+            c_values = (
+                item['Channel_Id'],
+                item['Video_Id'],
+                item['Comment_Id'],
+                item['Author_Name'],
+                item['Text_Display'],
+                item['Published_At']
+            )
+            mycursor.execute('''INSERT INTO Comments_Table (
+                                    Channel_Id,
+                                    Video_Id,
+                                    Comment_Id, 
+                                    Author_Name,
+                                    Text_Display,
+                                    Published_At) VALUES (%s, %s, %s, %s, %s, %s)''',c_values)       
+            
     
         mydb.commit()
-
-
-# ---------------------------------------------------------------------------------------
+        st.success("Uploaded Successfully")
+    except:
+        st.warning("Channel already exists")
+        
+# --------------------------------------------------------------------------------------
 
 if b3:
     with r_col:   
@@ -339,8 +319,6 @@ if b3:
             channel_sqltable()
             video_sqltable()
             comments_sqltable()
-            upload_channel_sqltable()
-            upload_video_sqltable()
-            upload_comments_sqltable()
-            st.success("Uploaded Successful")
+            upload_table()
+            
 
